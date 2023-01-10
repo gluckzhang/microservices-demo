@@ -49,31 +49,31 @@ seccompProfile:
 
 adService:
   create: true
-  name: adservice
+  name: chaosday-adservice
 
 cartService:
   create: true
-  name: cartservice
+  name: chaosday-cartservice
 
 checkoutService:
   create: true
-  name: checkoutservice
+  name: chaosday-checkoutservice
 
 currencyService:
   create: true
-  name: currencyservice
+  name: chaosday-currencyservice
 
 emailService:
   create: true
-  name: emailservice
+  name: chaosday-emailservice
 
 frontend:
   create: true
-  name: frontend
+  name: chaosday-frontend
   externalService: true
   cymbalBranding: false
   # One of: local, gcp, aws, azure, onprem, alibaba. When not set, defaults to "local" unless running in GKE, otherwise auto-sets to gcp.
-  platform: local
+  platform: aws
   singleSharedSession: false
   virtualService:
     create: false
@@ -87,33 +87,33 @@ frontend:
 
 loadGenerator:
   create: true
-  name: loadgenerator
+  name: chaosday-loadgenerator
   checkFrontendInitContainer: true
 
 paymentService:
   create: true
-  name: paymentservice
+  name: chaosday-paymentservice
 
 productCatalogService:
   create: true
-  name: productcatalogservice
+  name: chaosday-productcatalogservice
   # Specifies an extra latency to any request on productcatalogservice, by default no extra latency.
   extraLatency: ""
 
 recommendationService:
   create: true
-  name: recommendationservice
+  name: chaosday-recommendationservice
 
 shippingService:
   create: true
-  name: shippingservice
+  name: chaosday-shippingservice
 
 cartDatabase:
   # Specifies the type of the cartservice's database, could be either redis or spanner.
   type: redis
   connectionString: "redis-cart:6379"
   inClusterRedis:
-    name: redis-cart
+    name: chaosday-redis-cart
     # Uses the public redis image from Docker Hub, otherwise will use the images.repository.
     publicRepository: true
   externalRedisTlsOrigination:
