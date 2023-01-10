@@ -18,6 +18,8 @@ kind: Deployment
 metadata:
   name: {{ .Values.recommendationService.name }}
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.recommendationService.name }}
 spec:
   selector:
     matchLabels:

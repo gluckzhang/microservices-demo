@@ -16,6 +16,8 @@ kind: Deployment
 metadata:
   name: {{ .Values.cartService.name }}
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.cartService.name }}
 spec:
   selector:
     matchLabels:

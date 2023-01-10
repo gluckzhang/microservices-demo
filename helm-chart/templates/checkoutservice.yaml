@@ -18,6 +18,8 @@ kind: Deployment
 metadata:
   name: {{ .Values.checkoutService.name }}
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.checkoutService.name }}
 spec:
   selector:
     matchLabels:

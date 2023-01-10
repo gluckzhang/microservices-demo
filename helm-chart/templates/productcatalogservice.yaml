@@ -18,6 +18,8 @@ kind: Deployment
 metadata:
   name: {{ .Values.productCatalogService.name }}
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.productCatalogService.name }}
 spec:
   selector:
     matchLabels:

@@ -18,6 +18,8 @@ kind: Deployment
 metadata:
   name: {{ .Values.emailService.name }}
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.emailService.name }}
 spec:
   selector:
     matchLabels:

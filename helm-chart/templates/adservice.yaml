@@ -18,6 +18,8 @@ kind: Deployment
 metadata:
   name: {{ .Values.adService.name }}
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.adService.name }}
 spec:
   selector:
     matchLabels:
