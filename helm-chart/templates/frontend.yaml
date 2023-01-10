@@ -90,11 +90,9 @@ spec:
             value: "{{ .Values.adService.name }}:9555"
           - name: ENV_PLATFORM 
             value: {{ .Values.frontend.platform | quote }}
-          {{- if .Values.opentelemetryCollector.create }}
+          {{- if .Values.googleCloudOperations.tracing }}
           - name: COLLECTOR_SERVICE_ADDR
             value: "{{ .Values.opentelemetryCollector.name }}:4317"
-          {{- end }}
-          {{- if .Values.googleCloudOperations.tracing }}
           - name: ENABLE_TRACING
             value: "1"
           {{- end }}
