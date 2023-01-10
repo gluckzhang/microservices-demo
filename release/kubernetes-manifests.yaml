@@ -18,18 +18,26 @@
 
 # [START gke_release_kubernetes_manifests_microservices_demo]
 ---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: boutique
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: emailservice
+  name: chaosday-emailservice
+  namespace: boutique
+  labels:
+    app: chaosday-emailservice
 spec:
   selector:
     matchLabels:
-      app: emailservice
+      app: chaosday-emailservice
   template:
     metadata:
       labels:
-        app: emailservice
+        app: chaosday-emailservice
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
@@ -74,11 +82,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: emailservice
+  name: chaosday-emailservice
+  namespace: boutique
 spec:
   type: ClusterIP
   selector:
-    app: emailservice
+    app: chaosday-emailservice
   ports:
   - name: grpc
     port: 5000
@@ -87,15 +96,18 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: checkoutservice
+  name: chaosday-checkoutservice
+  namespace: boutique
+  labels:
+    app: chaosday-checkoutservice
 spec:
   selector:
     matchLabels:
-      app: checkoutservice
+      app: chaosday-checkoutservice
   template:
     metadata:
       labels:
-        app: checkoutservice
+        app: chaosday-checkoutservice
     spec:
       serviceAccountName: default
       securityContext:
@@ -147,11 +159,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: checkoutservice
+  name: chaosday-checkoutservice
+  namespace: boutique
 spec:
   type: ClusterIP
   selector:
-    app: checkoutservice
+    app: chaosday-checkoutservice
   ports:
   - name: grpc
     port: 5050
@@ -160,15 +173,18 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: recommendationservice
+  name: chaosday-recommendationservice
+  namespace: boutique
+  labels:
+    app: chaosday-recommendationservice
 spec:
   selector:
     matchLabels:
-      app: recommendationservice
+      app: chaosday-recommendationservice
   template:
     metadata:
       labels:
-        app: recommendationservice
+        app: chaosday-recommendationservice
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
@@ -215,11 +231,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: recommendationservice
+  name: chaosday-recommendationservice
+  namespace: boutique
 spec:
   type: ClusterIP
   selector:
-    app: recommendationservice
+    app: chaosday-recommendationservice
   ports:
   - name: grpc
     port: 8080
@@ -228,15 +245,18 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend
+  name: chaosday-frontend
+  namespace: boutique
+  labels:
+    app: chaosday-frontend
 spec:
   selector:
     matchLabels:
-      app: frontend
+      app: chaosday-frontend
   template:
     metadata:
       labels:
-        app: frontend
+        app: chaosday-frontend
       annotations:
         sidecar.istio.io/rewriteAppHTTPProbers: "true"
     spec:
@@ -310,11 +330,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend
+  name: chaosday-frontend
+  namespace: boutique
 spec:
   type: ClusterIP
   selector:
-    app: frontend
+    app: chaosday-frontend
   ports:
   - name: http
     port: 80
@@ -323,11 +344,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend-external
+  name: frontend-chaosday-external
+  namespace: boutique
 spec:
   type: LoadBalancer
   selector:
-    app: frontend
+    app: chaosday-frontend
   ports:
   - name: http
     port: 80
@@ -336,15 +358,18 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: paymentservice
+  name: chaosday-paymentservice
+  namespace: boutique
+  labels:
+    app: chaosday-paymentservice
 spec:
   selector:
     matchLabels:
-      app: paymentservice
+      app: chaosday-paymentservice
   template:
     metadata:
       labels:
-        app: paymentservice
+        app: chaosday-paymentservice
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
@@ -387,11 +412,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: paymentservice
+  name: chaosday-paymentservice
+  namespace: boutique
 spec:
   type: ClusterIP
   selector:
-    app: paymentservice
+    app: chaosday-paymentservice
   ports:
   - name: grpc
     port: 50051
@@ -400,15 +426,18 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: productcatalogservice
+  name: chaosday-productcatalogservice
+  namespace: boutique
+  labels:
+    app: chaosday-productcatalogservice
 spec:
   selector:
     matchLabels:
-      app: productcatalogservice
+      app: chaosday-productcatalogservice
   template:
     metadata:
       labels:
-        app: productcatalogservice
+        app: chaosday-productcatalogservice
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
@@ -451,11 +480,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: productcatalogservice
+  name: chaosday-productcatalogservice
+  namespace: boutique
 spec:
   type: ClusterIP
   selector:
-    app: productcatalogservice
+    app: chaosday-productcatalogservice
   ports:
   - name: grpc
     port: 3550
@@ -464,15 +494,18 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cartservice
+  name: chaosday-cartservice
+  namespace: boutique
+  labels:
+    app: chaosday-cartservice
 spec:
   selector:
     matchLabels:
-      app: cartservice
+      app: chaosday-cartservice
   template:
     metadata:
       labels:
-        app: cartservice
+        app: chaosday-cartservice
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
@@ -516,11 +549,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: cartservice
+  name: chaosday-cartservice
+  namespace: boutique
 spec:
   type: ClusterIP
   selector:
-    app: cartservice
+    app: chaosday-cartservice
   ports:
   - name: grpc
     port: 7070
@@ -529,16 +563,19 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: loadgenerator
+  name: chaosday-loadgenerator
+  namespace: boutique
+  labels:
+    app: chaosday-loadgenerator
 spec:
   selector:
     matchLabels:
-      app: loadgenerator
+      app: chaosday-loadgenerator
   replicas: 1
   template:
     metadata:
       labels:
-        app: loadgenerator
+        app: chaosday-loadgenerator
       annotations:
         sidecar.istio.io/rewriteAppHTTPProbers: "true"
     spec:
@@ -561,7 +598,7 @@ spec:
               echo "Error: Could not reach frontend - Status code: ${STATUSCODE}"
               exit 1
           fi
-        name: frontend-check
+        name: frontend-chaosday-check
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
@@ -599,15 +636,18 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: currencyservice
+  name: chaosday-currencyservice
+  namespace: boutique
+  labels:
+    app: chaosday-currencyservice
 spec:
   selector:
     matchLabels:
-      app: currencyservice
+      app: chaosday-currencyservice
   template:
     metadata:
       labels:
-        app: currencyservice
+        app: chaosday-currencyservice
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
@@ -651,11 +691,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: currencyservice
+  name: chaosday-currencyservice
+  namespace: boutique
 spec:
   type: ClusterIP
   selector:
-    app: currencyservice
+    app: chaosday-currencyservice
   ports:
   - name: grpc
     port: 7000
@@ -664,15 +705,18 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: shippingservice
+  name: chaosday-shippingservice
+  namespace: boutique
+  labels:
+    app: chaosday-shippingservice
 spec:
   selector:
     matchLabels:
-      app: shippingservice
+      app: chaosday-shippingservice
   template:
     metadata:
       labels:
-        app: shippingservice
+        app: chaosday-shippingservice
     spec:
       serviceAccountName: default
       securityContext:
@@ -715,11 +759,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: shippingservice
+  name: chaosday-shippingservice
+  namespace: boutique
 spec:
   type: ClusterIP
   selector:
-    app: shippingservice
+    app: chaosday-shippingservice
   ports:
   - name: grpc
     port: 50051
@@ -728,15 +773,18 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: redis-cart
+  name: redis-chaosday-cart
+  namespace: boutique
+  labels:
+    app: chaosday-cart
 spec:
   selector:
     matchLabels:
-      app: redis-cart
+      app: chaosday-redis-cart
   template:
     metadata:
       labels:
-        app: redis-cart
+        app: chaosday-redis-cart
     spec:
       securityContext:
         fsGroup: 1000
@@ -765,7 +813,7 @@ spec:
             port: 6379
         volumeMounts:
         - mountPath: /data
-          name: redis-data
+          name: redis-chaosday-data
         resources:
           limits:
             memory: 256Mi
@@ -780,11 +828,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: redis-cart
+  name: redis-chaosday-cart
+  namespace: boutique
 spec:
   type: ClusterIP
   selector:
-    app: redis-cart
+    app: chaosday-redis-cart
   ports:
   - name: tcp-redis
     port: 6379
@@ -793,15 +842,18 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: adservice
+  name: chaosday-adservice
+  namespace: boutique
+  labels:
+    app: chaosday-adservice
 spec:
   selector:
     matchLabels:
-      app: adservice
+      app: chaosday-adservice
   template:
     metadata:
       labels:
-        app: adservice
+        app: chaosday-adservice
     spec:
       serviceAccountName: default
       terminationGracePeriodSeconds: 5
@@ -846,11 +898,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: adservice
+  name: chaosday-adservice
+  namespace: boutique
 spec:
   type: ClusterIP
   selector:
-    app: adservice
+    app: chaosday-adservice
   ports:
   - name: grpc
     port: 9555
