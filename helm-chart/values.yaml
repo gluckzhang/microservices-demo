@@ -50,26 +50,32 @@ seccompProfile:
 adService:
   create: true
   name: chaosday-adservice
+  imageName: adservice
 
 cartService:
   create: true
   name: chaosday-cartservice
+  imageName: cartservice
 
 checkoutService:
   create: true
   name: chaosday-checkoutservice
+  imageName: checkoutservice
 
 currencyService:
   create: true
   name: chaosday-currencyservice
+  imageName: currencyservice
 
 emailService:
   create: true
   name: chaosday-emailservice
+  imageName: emailservice
 
 frontend:
   create: true
   name: chaosday-frontend
+  imageName: frontend
   externalService: true
   cymbalBranding: false
   # One of: local, gcp, aws, azure, onprem, alibaba. When not set, defaults to "local" unless running in GKE, otherwise auto-sets to gcp.
@@ -88,25 +94,30 @@ frontend:
 loadGenerator:
   create: true
   name: chaosday-loadgenerator
+  imageName: loadgenerator
   checkFrontendInitContainer: true
 
 paymentService:
   create: true
   name: chaosday-paymentservice
+  imageName: paymentservice
 
 productCatalogService:
   create: true
   name: chaosday-productcatalogservice
+  imageName: productcatalogservice
   # Specifies an extra latency to any request on productcatalogservice, by default no extra latency.
   extraLatency: ""
 
 recommendationService:
   create: true
   name: chaosday-recommendationservice
+  imageName: recommendationservice
 
 shippingService:
   create: true
   name: chaosday-shippingservice
+  imageName: shippingservice
 
 cartDatabase:
   # Specifies the type of the cartservice's database, could be either redis or spanner.
