@@ -344,7 +344,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend-chaosday-external
+  name: chaosday-frontend-external
   namespace: boutique
 spec:
   type: LoadBalancer
@@ -598,7 +598,7 @@ spec:
               echo "Error: Could not reach frontend - Status code: ${STATUSCODE}"
               exit 1
           fi
-        name: frontend-chaosday-check
+        name: chaosday-frontend-check
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
@@ -773,7 +773,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: redis-chaosday-cart
+  name: chaosday-redis-cart
   namespace: boutique
   labels:
     app: chaosday-cart
@@ -813,7 +813,7 @@ spec:
             port: 6379
         volumeMounts:
         - mountPath: /data
-          name: redis-chaosday-data
+          name: redis-data
         resources:
           limits:
             memory: 256Mi
@@ -828,7 +828,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: redis-chaosday-cart
+  name: chaosday-redis-cart
   namespace: boutique
 spec:
   type: ClusterIP
