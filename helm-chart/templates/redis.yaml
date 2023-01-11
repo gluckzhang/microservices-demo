@@ -66,6 +66,19 @@ spec:
         {{- else }}
         image: {{ .Values.images.repository }}/redis:alpine
         {{- end }}
+        env:
+        - name: DD_ENV
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['tags.datadoghq.com/env']
+        - name: DD_SERVICE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['tags.datadoghq.com/service']
+        - name: DD_VERSION
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['tags.datadoghq.com/version']
         ports:
         - containerPort: 6379
         readinessProbe:

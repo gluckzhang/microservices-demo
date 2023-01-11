@@ -76,6 +76,18 @@ spec:
         - name: REDIS_ADDR
         {{- end }}
           value: {{ .Values.cartDatabase.connectionString | quote }}
+        - name: DD_ENV
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['tags.datadoghq.com/env']
+        - name: DD_SERVICE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['tags.datadoghq.com/service']
+        - name: DD_VERSION
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['tags.datadoghq.com/version']
         resources:
           requests:
             cpu: 200m

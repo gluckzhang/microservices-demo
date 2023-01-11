@@ -71,6 +71,18 @@ spec:
         - name: DISABLE_PROFILER
           value: "1"
         {{- end }}
+        - name: DD_ENV
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['tags.datadoghq.com/env']
+        - name: DD_SERVICE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['tags.datadoghq.com/service']
+        - name: DD_VERSION
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['tags.datadoghq.com/version']
         readinessProbe:
           periodSeconds: 5
           {{- if .Values.nativeGrpcHealthCheck }}
