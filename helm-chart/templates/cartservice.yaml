@@ -18,13 +18,14 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     app: {{ .Values.cartService.name }}
-    tags.datadoghq.com/service: {{ .Values.cartService.name }}
-    tags.datadoghq.com/version: {{ .Chart.AppVersion }}
-    tags.datadoghq.com/env: {{ .Values.env }}
+    app.kubernetes.io/name: {{ .Values.cartService.name }}
+    app.kubernetes.io/part-of: onlineboutique
 spec:
   selector:
     matchLabels:
       app: {{ .Values.cartService.name }}
+      app.kubernetes.io/name: {{ .Values.cartService.name }}
+      app.kubernetes.io/part-of: onlineboutique
   template:
     metadata:
       {{- if .Values.cartDatabase.externalRedisTlsOrigination.enable }}
@@ -35,6 +36,11 @@ spec:
       {{- end }}
       labels:
         app: {{ .Values.cartService.name }}
+        app.kubernetes.io/name: {{ .Values.cartService.name }}
+        app.kubernetes.io/part-of: onlineboutique
+        tags.datadoghq.com/service: {{ .Values.cartService.name }}
+        tags.datadoghq.com/version: {{ .Chart.AppVersion }}
+        tags.datadoghq.com/env: {{ .Values.env }}
     spec:
       {{- if .Values.serviceAccounts.create }}
       serviceAccountName: {{ .Values.cartService.name }}
@@ -102,6 +108,9 @@ kind: Service
 metadata:
   name: {{ .Values.cartService.name }}
   namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: {{ .Values.cartService.name }}
+    app.kubernetes.io/part-of: onlineboutique
 spec:
   type: ClusterIP
   selector:

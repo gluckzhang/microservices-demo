@@ -20,17 +20,23 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     app: {{ .Values.recommendationService.name }}
-    tags.datadoghq.com/service: {{ .Values.recommendationService.name }}
-    tags.datadoghq.com/version: {{ .Chart.AppVersion }}
-    tags.datadoghq.com/env: {{ .Values.env }}
+    app.kubernetes.io/name: {{ .Values.recommendationService.name }}
+    app.kubernetes.io/part-of: onlineboutique
 spec:
   selector:
     matchLabels:
       app: {{ .Values.recommendationService.name }}
+      app.kubernetes.io/name: {{ .Values.recommendationService.name }}
+      app.kubernetes.io/part-of: onlineboutique
   template:
     metadata:
       labels:
         app: {{ .Values.recommendationService.name }}
+        app.kubernetes.io/name: {{ .Values.recommendationService.name }}
+        app.kubernetes.io/part-of: onlineboutique
+        tags.datadoghq.com/service: {{ .Values.recommendationService.name }}
+        tags.datadoghq.com/version: {{ .Chart.AppVersion }}
+        tags.datadoghq.com/env: {{ .Values.env }}
     spec:
       {{- if .Values.serviceAccounts.create }}
       serviceAccountName: {{ .Values.recommendationService.name }}
@@ -105,6 +111,9 @@ kind: Service
 metadata:
   name: {{ .Values.recommendationService.name }}
   namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: {{ .Values.recommendationService.name }}
+    app.kubernetes.io/part-of: onlineboutique
 spec:
   type: ClusterIP
   selector:

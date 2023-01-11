@@ -20,18 +20,24 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     app: {{ .Values.loadGenerator.name }}
-    tags.datadoghq.com/service: {{ .Values.loadGenerator.name }}
-    tags.datadoghq.com/version: {{ .Chart.AppVersion }}
-    tags.datadoghq.com/env: {{ .Values.env }}
+    app.kubernetes.io/name: {{ .Values.loadGenerator.name }}
+    app.kubernetes.io/part-of: onlineboutique
 spec:
   selector:
     matchLabels:
       app: {{ .Values.loadGenerator.name }}
+      app.kubernetes.io/name: {{ .Values.loadGenerator.name }}
+      app.kubernetes.io/part-of: onlineboutique
   replicas: 1
   template:
     metadata:
       labels:
         app: {{ .Values.loadGenerator.name }}
+        app.kubernetes.io/name: {{ .Values.loadGenerator.name }}
+        app.kubernetes.io/part-of: onlineboutique
+        tags.datadoghq.com/service: {{ .Values.loadGenerator.name }}
+        tags.datadoghq.com/version: {{ .Chart.AppVersion }}
+        tags.datadoghq.com/env: {{ .Values.env }}
       annotations:
         sidecar.istio.io/rewriteAppHTTPProbers: "true"
     spec:
