@@ -20,6 +20,9 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     app: {{ .Values.loadGenerator.name }}
+    tags.datadoghq.com/service: {{ .Values.loadGenerator.name }}
+    tags.datadoghq.com/version: {{ .Chart.AppVersion }}
+    tags.datadoghq.com/env: {{ .Values.env }}
 spec:
   selector:
     matchLabels:

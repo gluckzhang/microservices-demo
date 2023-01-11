@@ -2,6 +2,8 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+env: sandbox
+
 images:
   repository: gcr.io/google-samples/microservices-demo
   # Overrides the image tag whose default is the chart appVersion.

@@ -18,6 +18,9 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     app: {{ .Values.cartService.name }}
+    tags.datadoghq.com/service: {{ .Values.cartService.name }}
+    tags.datadoghq.com/version: {{ .Chart.AppVersion }}
+    tags.datadoghq.com/env: {{ .Values.env }}
 spec:
   selector:
     matchLabels:
