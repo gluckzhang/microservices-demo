@@ -103,7 +103,6 @@ func main() {
 	if os.Getenv("ENABLE_TRACING") == "1" {
 		log.Info("Tracing enabled.")
 		initTracing(log, ctx, svc)
-		tracer.Start(tracer.WithAgentAddr(os.Getenv("COLLECTOR_SERVICE_ADDR")))
 	} else {
 		log.Info("Tracing disabled.")
 	}
@@ -164,6 +163,10 @@ func initStats(log logrus.FieldLogger) {
 }
 
 func initTracing(log logrus.FieldLogger, ctx context.Context, svc *frontendServer) (*sdktrace.TracerProvider, error) {
+	// DataDog tracer
+	tracer.Start()
+	defer tracer.Stop()
+	// OpenTelemetry
 	mustMapEnv(&svc.collectorAddr, "COLLECTOR_SERVICE_ADDR")
 	mustConnGRPC(ctx, &svc.collectorConn, svc.collectorAddr)
 	exporter, err := otlptracegrpc.New(
