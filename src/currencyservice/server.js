@@ -30,6 +30,10 @@ else {
 
 if(process.env.ENABLE_TRACING == "1") {
   console.log("Tracing enabled.")
+  // This line must come before importing any instrumented module.
+  const tracer = require('dd-trace').init({
+    logInjection: true
+  });
   const { NodeTracerProvider } = require('@opentelemetry/sdk-trace-node');
   const { SimpleSpanProcessor } = require('@opentelemetry/sdk-trace-base');
   const { GrpcInstrumentation } = require('@opentelemetry/instrumentation-grpc');
