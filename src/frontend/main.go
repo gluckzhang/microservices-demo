@@ -194,7 +194,7 @@ func mustConnGRPC(ctx context.Context, conn **grpc.ClientConn, addr string, svcN
 	if os.Getenv("ENABLE_TRACING") == "1" {
 		ci := grpctrace.StreamClientInterceptor(
 			grpctrace.WithServiceName(svcName),
-			grpctrace.WithStreamCalls(false),
+			grpctrace.WithStreamCalls(true),
 		)
 		*conn, err = grpc.DialContext(ctx, addr,
 			grpc.WithInsecure(),

@@ -128,7 +128,7 @@ func main() {
 	if os.Getenv("ENABLE_TRACING") == "1" {
 		si := grpctrace.StreamServerInterceptor(
 			grpctrace.WithServiceName("chaosday-checkoutservice"),
-			grpctrace.WithStreamMessages(false),
+			grpctrace.WithStreamMessages(true),
 		)
 		srv = grpc.NewServer(grpc.StreamInterceptor(si))
 	} else {
@@ -183,7 +183,7 @@ func mustConnGRPC(ctx context.Context, conn **grpc.ClientConn, addr string, svcN
 	if os.Getenv("ENABLE_TRACING") == "1" {
 		ci := grpctrace.StreamClientInterceptor(
 			grpctrace.WithServiceName(svcName),
-			grpctrace.WithStreamCalls(false),
+			grpctrace.WithStreamCalls(true),
 		)
 		*conn, err = grpc.DialContext(ctx, addr,
 			grpc.WithInsecure(),
