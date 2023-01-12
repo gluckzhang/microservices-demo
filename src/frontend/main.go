@@ -32,6 +32,8 @@ import (
 	"go.opentelemetry.io/otel/propagation"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	"google.golang.org/grpc"
+
+	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 )
 
 const (
@@ -101,6 +103,7 @@ func main() {
 	if os.Getenv("ENABLE_TRACING") == "1" {
 		log.Info("Tracing enabled.")
 		initTracing(log, ctx, svc)
+		tracer.Start(tracer.WithAgentAddr(os.Getenv("COLLECTOR_SERVICE_ADDR")))
 	} else {
 		log.Info("Tracing disabled.")
 	}
