@@ -12,17 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-if(process.env.ENABLE_TRACING == "1") {
-  console.log("Tracing enabled.")
-  // This line must come before importing any instrumented module.
-  const tracer = require('dd-trace').init({
-    logInjection: true
-  });
-}
-else {
-  console.log("Tracing disabled.")
-}
-
 const path = require('path');
 const grpc = require('@grpc/grpc-js');
 const pino = require('pino');

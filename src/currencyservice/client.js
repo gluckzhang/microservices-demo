@@ -15,7 +15,17 @@
  * limitations under the License.
  *
  */
-require('@google-cloud/trace-agent').start();
+
+if(process.env.ENABLE_TRACING == "1") {
+  console.log("Tracing enabled.")
+  // This line must come before importing any instrumented module.
+  const tracer = require('dd-trace').init({
+    logInjection: true
+  });
+}
+else {
+  console.log("Tracing disabled.")
+}
 
 const path = require('path');
 const grpc = require('grpc');
