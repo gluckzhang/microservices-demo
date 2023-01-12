@@ -101,7 +101,7 @@ func main() {
 
 	if os.Getenv("ENABLE_TRACING") == "1" {
 		log.Info("Tracing enabled.")
-		tracer.Start(tracer.WithAgentAddr(os.Getenv("DD_AGENT_HOST")))
+		tracer.Start(tracer.WithAgentAddr(os.Getenv("DD_AGENT_HOST") + ":" + os.Getenv("DD_TRACE_AGENT_PORT")))
 		defer tracer.Stop()
 	} else {
 		log.Info("Tracing disabled.")
