@@ -71,6 +71,10 @@ spec:
         {{- if .Values.googleCloudOperations.tracing }}
         - name: COLLECTOR_SERVICE_ADDR
           value: "{{ .Values.opentelemetryCollector.name }}:4317"
+        - name: DD_AGENT_HOST
+          value: "{{ .Values.datadog.agentHost }}"
+        - name: DD_TRACE_AGENT_PORT
+          value: "{{ .Values.datadog.traceAgentPort }}"
         - name: ENABLE_TRACING
           value: "1"
         {{- end }}

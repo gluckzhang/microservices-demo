@@ -74,6 +74,10 @@ spec:
           value: "{{ .Values.opentelemetryCollector.name }}:4317"
         - name: ENABLE_TRACING
           value: "1"
+        - name: DD_TRACE_AGENT_HOSTNAME
+          value: "{{ .Values.datadog.agentHost }}"
+        - name: DD_TRACE_AGENT_PORT
+          value: "{{ .Values.datadog.traceAgentPort }}"
         {{- end }}
         {{- if not .Values.googleCloudOperations.profiler }}
         - name: DISABLE_PROFILER
