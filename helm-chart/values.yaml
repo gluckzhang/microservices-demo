@@ -5,9 +5,9 @@
 env: sandbox
 
 images:
-  repository: gcr.io/google-samples/microservices-demo
+  repository: gluckzhang # gcr.io/google-samples/microservices-demo
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "v0.5.0-18-g7ad4aeb"
   # Adds a suffix to the image tag.
   tagSuffix: ""
 
@@ -33,6 +33,10 @@ sidecars:
 authorizationPolicies:
   # Specifies if the AuthorizationPolicies are created or not. If true, one fine granular AuthorizationPolicy per app is created.
   create: false
+
+datadog:
+  agentHost: datadog-agent.monitoring.svc.cluster.local
+  traceAgentPort: 8126
 
 opentelemetryCollector:
   create: false
