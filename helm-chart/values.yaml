@@ -7,7 +7,7 @@ env: sandbox
 images:
   repository: gluckzhang # gcr.io/google-samples/microservices-demo
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "v0.5.0-23-gd139eee"
+  tag: "v0.5.0-32-gcb27603"
   # Adds a suffix to the image tag.
   tagSuffix: ""
 
