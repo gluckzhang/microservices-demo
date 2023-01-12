@@ -39,11 +39,13 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
 	"go.opentelemetry.io/otel/propagation"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
+
+	grpctrace "gopkg.in/DataDog/dd-trace-go.v1/contrib/google.golang.org/grpc"
+	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 )
 
 var (
@@ -77,10 +79,8 @@ func init() {
 
 func main() {
 	if os.Getenv("ENABLE_TRACING") == "1" {
-		err := initTracing()
-		if err != nil {
-			log.Warnf("warn: failed to start tracer: %+v", err)
-		}
+		tracer.Start(tracer.WithAgentAddr(os.Getenv("DD_AGENT_HOST") + ":" + os.Getenv("DD_TRACE_AGENT_PORT")))
+		defer tracer.Stop()
 	} else {
 		log.Info("Tracing disabled.")
 	}
@@ -137,9 +137,11 @@ func run(port string) string {
 	}
 	var srv *grpc.Server
 	if os.Getenv("ENABLE_TRACING") == "1" {
-		srv = grpc.NewServer(
-			grpc.UnaryInterceptor(otelgrpc.UnaryServerInterceptor()),
-			grpc.StreamInterceptor(otelgrpc.StreamServerInterceptor()))
+		si := grpctrace.StreamServerInterceptor(
+			grpctrace.WithServiceName("chaosday-productcatalogservice"),
+			grpctrace.WithStreamMessages(false),
+		)
+		srv = grpc.NewServer(grpc.StreamInterceptor(si))
 	} else {
 		srv = grpc.NewServer()
 	}
@@ -286,10 +288,11 @@ func mustConnGRPC(ctx context.Context, conn **grpc.ClientConn, addr string) {
 	ctx, cancel := context.WithTimeout(ctx, time.Second*3)
 	defer cancel()
 	if os.Getenv("ENABLE_TRACING") == "1" {
-		*conn, err = grpc.DialContext(ctx, addr,
-			grpc.WithInsecure(),
-			grpc.WithUnaryInterceptor(otelgrpc.UnaryClientInterceptor()),
-			grpc.WithStreamInterceptor(otelgrpc.StreamClientInterceptor()))
+		ci := grpctrace.StreamClientInterceptor(
+			grpctrace.WithServiceName("chaosday-checkoutservice"),
+			grpctrace.WithStreamCalls(false),
+		)
+		*conn, err = grpc.DialContext(ctx, addr, grpc.WithStreamInterceptor(ci))
 	} else {
 		*conn, err = grpc.DialContext(ctx, addr,
 			grpc.WithInsecure())
