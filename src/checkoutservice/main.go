@@ -126,7 +126,7 @@ func main() {
 	var srv *grpc.Server
 	//TODO(arbrown) Add metrics hook
 	if os.Getenv("ENABLE_TRACING") == "1" {
-		ui := grpctrace.UnaryClientInterceptor(grpctrace.WithServiceName("chaosday-checkoutservice"))
+		ui := grpctrace.UnaryServerInterceptor(grpctrace.WithServiceName("chaosday-checkoutservice"))
 		si := grpctrace.StreamServerInterceptor(grpctrace.WithServiceName("chaosday-checkoutservice"))
 		srv = grpc.NewServer(grpc.WithUnaryInterceptor(ui), grpc.StreamInterceptor(si))
 	} else {
