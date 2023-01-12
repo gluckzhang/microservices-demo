@@ -24,13 +24,13 @@ import (
 	"cloud.google.com/go/profiler"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
-	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
 	"go.opentelemetry.io/otel/propagation"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	"google.golang.org/grpc"
 
+	grpctrace "gopkg.in/DataDog/dd-trace-go.v1/contrib/google.golang.org/grpc"
 	muxtrace "gopkg.in/DataDog/dd-trace-go.v1/contrib/gorilla/mux"
 	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 )
@@ -127,13 +127,13 @@ func main() {
 	mustMapEnv(&svc.shippingSvcAddr, "SHIPPING_SERVICE_ADDR")
 	mustMapEnv(&svc.adSvcAddr, "AD_SERVICE_ADDR")
 
-	mustConnGRPC(ctx, &svc.currencySvcConn, svc.currencySvcAddr)
-	mustConnGRPC(ctx, &svc.productCatalogSvcConn, svc.productCatalogSvcAddr)
-	mustConnGRPC(ctx, &svc.cartSvcConn, svc.cartSvcAddr)
-	mustConnGRPC(ctx, &svc.recommendationSvcConn, svc.recommendationSvcAddr)
-	mustConnGRPC(ctx, &svc.shippingSvcConn, svc.shippingSvcAddr)
-	mustConnGRPC(ctx, &svc.checkoutSvcConn, svc.checkoutSvcAddr)
-	mustConnGRPC(ctx, &svc.adSvcConn, svc.adSvcAddr)
+	mustConnGRPC(ctx, &svc.currencySvcConn, svc.currencySvcAddr, "chaosday-currencyservice")
+	mustConnGRPC(ctx, &svc.productCatalogSvcConn, svc.productCatalogSvcAddr, "chaosday-productcatalogservice")
+	mustConnGRPC(ctx, &svc.cartSvcConn, svc.cartSvcAddr, "chaosday-cartservice")
+	mustConnGRPC(ctx, &svc.recommendationSvcConn, svc.recommendationSvcAddr, "chaosday-recommendationservice")
+	mustConnGRPC(ctx, &svc.shippingSvcConn, svc.shippingSvcAddr, "chaosday-shippingservice")
+	mustConnGRPC(ctx, &svc.checkoutSvcConn, svc.checkoutSvcAddr, "chaosday-checkoutservice")
+	mustConnGRPC(ctx, &svc.adSvcConn, svc.adSvcAddr, "chaosday-adservice")
 
 	// Create a traced mux router
 	r := muxtrace.NewRouter()
@@ -211,15 +211,18 @@ func mustMapEnv(target *string, envKey string) {
 	*target = v
 }
 
-func mustConnGRPC(ctx context.Context, conn **grpc.ClientConn, addr string) {
+func mustConnGRPC(ctx context.Context, conn **grpc.ClientConn, addr string, svcName string) {
 	var err error
 	ctx, cancel := context.WithTimeout(ctx, time.Second*3)
 	defer cancel()
 	if os.Getenv("ENABLE_TRACING") == "1" {
+		ci := grpctrace.StreamClientInterceptor(
+			grpctrace.WithServiceName(svcName),
+			grpctrace.WithStreamCalls(false),
+		)
 		*conn, err = grpc.DialContext(ctx, addr,
 			grpc.WithInsecure(),
-			grpc.WithUnaryInterceptor(otelgrpc.UnaryClientInterceptor()),
-			grpc.WithStreamInterceptor(otelgrpc.StreamClientInterceptor()))
+			grpc.WithStreamInterceptor(ci))
 	} else {
 		*conn, err = grpc.DialContext(ctx, addr,
 			grpc.WithInsecure())

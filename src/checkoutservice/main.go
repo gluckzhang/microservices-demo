@@ -114,12 +114,12 @@ func main() {
 	mustMapEnv(&svc.emailSvcAddr, "EMAIL_SERVICE_ADDR")
 	mustMapEnv(&svc.paymentSvcAddr, "PAYMENT_SERVICE_ADDR")
 
-	mustConnGRPC(ctx, &svc.shippingSvcConn, svc.shippingSvcAddr)
-	mustConnGRPC(ctx, &svc.productCatalogSvcConn, svc.productCatalogSvcAddr)
-	mustConnGRPC(ctx, &svc.cartSvcConn, svc.cartSvcAddr)
-	mustConnGRPC(ctx, &svc.currencySvcConn, svc.currencySvcAddr)
-	mustConnGRPC(ctx, &svc.emailSvcConn, svc.emailSvcAddr)
-	mustConnGRPC(ctx, &svc.paymentSvcConn, svc.paymentSvcAddr)
+	mustConnGRPC(ctx, &svc.shippingSvcConn, svc.shippingSvcAddr, "chaosday-shippingservice")
+	mustConnGRPC(ctx, &svc.productCatalogSvcConn, svc.productCatalogSvcAddr, "chaosday-productcatalogservice")
+	mustConnGRPC(ctx, &svc.cartSvcConn, svc.cartSvcAddr, "chaosday-cartservice")
+	mustConnGRPC(ctx, &svc.currencySvcConn, svc.currencySvcAddr, "chaosday-currencyservice")
+	mustConnGRPC(ctx, &svc.emailSvcConn, svc.emailSvcAddr, "chaosday-emailservice")
+	mustConnGRPC(ctx, &svc.paymentSvcConn, svc.paymentSvcAddr, "chaosday-paymentservice")
 
 	log.Infof("service config: %+v", svc)
 
@@ -209,13 +209,13 @@ func mustMapEnv(target *string, envKey string) {
 	*target = v
 }
 
-func mustConnGRPC(ctx context.Context, conn **grpc.ClientConn, addr string) {
+func mustConnGRPC(ctx context.Context, conn **grpc.ClientConn, addr string, svcName string) {
 	var err error
 	ctx, cancel := context.WithTimeout(ctx, time.Second*3)
 	defer cancel()
 	if os.Getenv("ENABLE_TRACING") == "1" {
 		ci := grpctrace.StreamClientInterceptor(
-			grpctrace.WithServiceName("chaosday-checkoutservice"),
+			grpctrace.WithServiceName(svcName),
 			grpctrace.WithStreamCalls(false),
 		)
 		*conn, err = grpc.DialContext(ctx, addr,

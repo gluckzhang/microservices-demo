@@ -167,7 +167,7 @@ func initTracing() error {
 	ctx := context.Background()
 
 	mustMapEnv(&collectorAddr, "COLLECTOR_SERVICE_ADDR")
-	mustConnGRPC(ctx, &collectorConn, collectorAddr)
+	mustConnGRPC(ctx, &collectorConn, collectorAddr, "chaosday-collector")
 
 	exporter, err := otlptracegrpc.New(
 		ctx,
@@ -283,13 +283,13 @@ func mustMapEnv(target *string, envKey string) {
 	*target = v
 }
 
-func mustConnGRPC(ctx context.Context, conn **grpc.ClientConn, addr string) {
+func mustConnGRPC(ctx context.Context, conn **grpc.ClientConn, addr string, svcName string) {
 	var err error
 	ctx, cancel := context.WithTimeout(ctx, time.Second*3)
 	defer cancel()
 	if os.Getenv("ENABLE_TRACING") == "1" {
 		ci := grpctrace.StreamClientInterceptor(
-			grpctrace.WithServiceName("chaosday-productcatalogservice"),
+			grpctrace.WithServiceName(svcName),
 			grpctrace.WithStreamCalls(false),
 		)
 		*conn, err = grpc.DialContext(ctx, addr,
