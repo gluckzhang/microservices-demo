@@ -126,11 +126,9 @@ func main() {
 	var srv *grpc.Server
 	//TODO(arbrown) Add metrics hook
 	if os.Getenv("ENABLE_TRACING") == "1" {
-		si := grpctrace.StreamServerInterceptor(
-			grpctrace.WithServiceName("chaosday-checkoutservice"),
-			grpctrace.WithStreamMessages(true),
-		)
-		srv = grpc.NewServer(grpc.StreamInterceptor(si))
+		ui := grpctrace.UnaryClientInterceptor(grpctrace.WithServiceName("chaosday-checkoutservice"))
+		si := grpctrace.StreamServerInterceptor(grpctrace.WithServiceName("chaosday-checkoutservice"))
+		srv = grpc.NewServer(grpc.WithUnaryInterceptor(ui), grpc.StreamInterceptor(si))
 	} else {
 		srv = grpc.NewServer()
 	}
@@ -181,12 +179,11 @@ func mustConnGRPC(ctx context.Context, conn **grpc.ClientConn, addr string, svcN
 	ctx, cancel := context.WithTimeout(ctx, time.Second*3)
 	defer cancel()
 	if os.Getenv("ENABLE_TRACING") == "1" {
-		ci := grpctrace.StreamClientInterceptor(
-			grpctrace.WithServiceName(svcName),
-			grpctrace.WithStreamCalls(true),
-		)
+		ui := grpctrace.UnaryClientInterceptor(grpctrace.WithServiceName(svcName))
+		ci := grpctrace.StreamClientInterceptor(grpctrace.WithServiceName(svcName))
 		*conn, err = grpc.DialContext(ctx, addr,
 			grpc.WithInsecure(),
+			grpc.WithUnaryInterceptor(ui),
 			grpc.WithStreamInterceptor(ci))
 	} else {
 		*conn, err = grpc.DialContext(ctx, addr,
