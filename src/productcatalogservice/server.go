@@ -134,7 +134,7 @@ func run(port string) string {
 	if os.Getenv("ENABLE_TRACING") == "1" {
 		ui := grpctrace.UnaryServerInterceptor(grpctrace.WithServiceName("chaosday-productcatalogservice"))
 		si := grpctrace.StreamServerInterceptor(grpctrace.WithServiceName("chaosday-productcatalogservice"))
-		srv = grpc.NewServer(grpc.WithUnaryInterceptor(ui), grpc.StreamInterceptor(si))
+		srv = grpc.NewServer(grpc.UnaryInterceptor(ui), grpc.StreamInterceptor(si))
 	} else {
 		srv = grpc.NewServer()
 	}
