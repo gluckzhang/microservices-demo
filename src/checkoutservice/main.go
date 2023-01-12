@@ -33,11 +33,12 @@ import (
 	money "github.com/GoogleCloudPlatform/microservices-demo/src/checkoutservice/money"
 	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 
-	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
 	"go.opentelemetry.io/otel/propagation"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
+
+	grpctrace "gopkg.in/DataDog/dd-trace-go.v1/contrib/google.golang.org/grpc"
 )
 
 const (
@@ -85,7 +86,6 @@ func main() {
 	ctx := context.Background()
 	if os.Getenv("ENABLE_TRACING") == "1" {
 		log.Info("Tracing enabled.")
-		initTracing()
 
 	} else {
 		log.Info("Tracing disabled.")
@@ -128,10 +128,11 @@ func main() {
 	var srv *grpc.Server
 	//TODO(arbrown) Add metrics hook
 	if os.Getenv("ENABLE_TRACING") == "1" {
-		srv = grpc.NewServer(
-			grpc.UnaryInterceptor(otelgrpc.UnaryServerInterceptor()),
-			grpc.StreamInterceptor(otelgrpc.StreamServerInterceptor()),
+		si := grpctrace.StreamServerInterceptor(
+			grpctrace.WithServiceName("chaosday-checkoutservice"),
+			grpctrace.WithStreamMessages(false),
 		)
+		srv = grpc.NewServer(grpc.StreamInterceptor(si))
 	} else {
 		srv = grpc.NewServer()
 	}
@@ -210,10 +211,11 @@ func mustConnGRPC(ctx context.Context, conn **grpc.ClientConn, addr string) {
 	ctx, cancel := context.WithTimeout(ctx, time.Second*3)
 	defer cancel()
 	if os.Getenv("ENABLE_TRACING") == "1" {
-		*conn, err = grpc.DialContext(ctx, addr,
-			grpc.WithInsecure(),
-			grpc.WithUnaryInterceptor(otelgrpc.UnaryClientInterceptor()),
-			grpc.WithStreamInterceptor(otelgrpc.StreamClientInterceptor()))
+		ci := grpctrace.StreamClientInterceptor(
+			grpctrace.WithServiceName("chaosday-checkoutservice"),
+			grpctrace.WithStreamCalls(false),
+		)
+		*conn, err = grpc.DialContext(ctx, addr, grpc.WithStreamInterceptor(ci))
 	} else {
 		*conn, err = grpc.DialContext(ctx, addr,
 			grpc.WithInsecure())
