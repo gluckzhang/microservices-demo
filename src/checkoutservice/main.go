@@ -218,7 +218,9 @@ func mustConnGRPC(ctx context.Context, conn **grpc.ClientConn, addr string) {
 			grpctrace.WithServiceName("chaosday-checkoutservice"),
 			grpctrace.WithStreamCalls(false),
 		)
-		*conn, err = grpc.DialContext(ctx, addr, grpc.WithStreamInterceptor(ci))
+		*conn, err = grpc.DialContext(ctx, addr,
+			grpc.WithInsecure(),
+			grpc.WithStreamInterceptor(ci))
 	} else {
 		*conn, err = grpc.DialContext(ctx, addr,
 			grpc.WithInsecure())
